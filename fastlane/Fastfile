@@ -1,0 +1,44 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Demonstrate how to write a keychain to Vault"
+  lane :keychain_to_vault_test do
+    write_keychain_to_vault(
+        vault_addr: 'http://127.0.0.1:8200',
+        keychain_path: File.expand_path('~/Desktop/my.keychain-db')
+    )
+  end
+
+  desc "Demonstrate how to get a keychain from Vault and unlock it"
+  lane :keychain_from_vault_test do
+    keychain_data =  get_keychain_from_vault(
+        vault_addr: 'http://127.0.0.1:8200',
+        keychain_path: File.expand_path('~/Desktop/my.keychain-db')
+    )
+    unlock_keychain(path: keychain_data[:keychain_path], password: keychain_data[:keychain_password])
+    delete_keychain(keychain_path: keychain_data[:keychain_path])
+  end
+  
+  desc "Demonstrate how to get a temporary keychain from Vault and unlock it"
+  lane :tmp_keychain_from_vault_test do
+    keychain_data =  get_keychain_from_vault(
+        vault_addr: 'http://127.0.0.1:8200'
+    )
+    unlock_keychain(path: keychain_data[:keychain_path], password: keychain_data[:keychain_password])
+  end
+end

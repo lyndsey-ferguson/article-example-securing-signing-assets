@@ -1,0 +1,7 @@
+{
+  "allowed_policies": [
+    "custom-mobile-apps-read-policy"
+  ],
+  "name": "custom-mobile-apps-read-policy-create-role"
+}
+

@@ -1,0 +1,9 @@
+{
+	"path": {
+		"auth/token/role/create/app-read": {
+			"policy": ["update"]
+		}
+
+	}
+}
+
