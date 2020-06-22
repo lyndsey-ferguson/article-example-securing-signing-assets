@@ -49,7 +49,9 @@ fi
 # Vault does not support storing and retrieving binary data: we need to encode
 # binary data into base64 in order to put it into Vault (remove extra newlines)
 KEYCHAIN_ENCODED_DATA="$(base64 -b 0 "$KEYCHAIN_FILEPATH")"
-read -sp "Keychain password: " KEYCHAIN_PASSWORD
+if [[ -z ${KEYCHAIN_PASSWORD+x} ]]; then
+  read -sp "Keychain password: " KEYCHAIN_PASSWORD
+fi
 echo ""
 
 ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH=$(mktemp /tmp/XXXXXX-encrypted-keychain-password.enc)
@@ -57,7 +59,10 @@ echo "$KEYCHAIN_PASSWORD" | tr -d '\n' | openssl rsautl -encrypt -pubin -inkey v
 
 ENCODED_ENCRYPTED_KEYCHAIN_PASSWORD="$(cat "$ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH" | base64 -b 0)"
 rm "$ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH" # Delete the password file, just to be safe
-read -p "Company name: " COMPANY_NAME
+if [[ -z ${COMPANY_NAME+x} ]]; then
+  read -p "Company name: " COMPANY_NAME
+fi
+
 echo ""
 echo "$ENCODED_ENCRYPTED_KEYCHAIN_PASSWORD" > "${COMPANY_NAME}-encoded-encrypted-keychain-password.enc"
 
