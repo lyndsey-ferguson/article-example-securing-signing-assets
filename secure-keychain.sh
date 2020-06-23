@@ -54,7 +54,8 @@ if [[ -z ${KEYCHAIN_PASSWORD+x} ]]; then
 fi
 echo ""
 
-ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH=$(mktemp /tmp/XXXXXX-encrypted-keychain-password.enc)
+ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH=$(mktemp /tmp/encrypted-keychain-password.enc.XXXXXX)
+rm $ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH
 echo "$KEYCHAIN_PASSWORD" | tr -d '\n' | openssl rsautl -encrypt -pubin -inkey vault/public-mobile-apps.key -out $ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH
 
 ENCODED_ENCRYPTED_KEYCHAIN_PASSWORD="$(cat "$ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH" | base64 -b 0)"
@@ -79,12 +80,20 @@ curl \
 rm "${COMPANY_NAME}-encoded-encrypted-keychain-password.enc"
 
 # POST to the Vault server in order to write the encrypted APNS key for the customer.
+APNS_JSON_FILEPATH=$(mktemp /tmp/APNS_JSON.json.XXXXXX)
+cat > $APNS_JSON_FILEPATH <<- EOF
+ {
+   "data": {
+     "apns_private_key": "$(cat $APNS_PRIVATE_KEY_FILE_PATH)"
+   }
+ }
+EOF
+
 curl \
  -H "X-Vault-Token: $VAULT_TOKEN" \
  -H "Content-Type: application/json" \
- -X POST \
- -d "{\"data\": {\"apns_private_key\":\"$(cat "$APNS_PRIVATE_KEY_FILE_PATH")\"}}" \
- "http://127.0.0.1:8200/v1/secret/data/custom-mobile-apps/apns_keys/$COMPANY_NAME"
+ -X POST "http://127.0.0.1:8200/v1/secret/data/custom-mobile-apps/apns_keys/$COMPANY_NAME" \
+ -d @$APNS_JSON_FILEPATH
 
 echo "Keychain data secured into Vault"
 
