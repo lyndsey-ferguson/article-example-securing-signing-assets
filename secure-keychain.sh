@@ -2,6 +2,7 @@
 
 # Restrict standard system command line tools.
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 set -e
 set -x
@@ -56,7 +57,7 @@ echo ""
 
 ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH=$(mktemp /tmp/encrypted-keychain-password.enc.XXXXXX)
 rm $ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH
-echo "$KEYCHAIN_PASSWORD" | tr -d '\n' | openssl rsautl -encrypt -pubin -inkey vault/public-mobile-apps.key -out $ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH
+echo "$KEYCHAIN_PASSWORD" | tr -d '\n' | openssl rsautl -encrypt -pubin -inkey $HERE/vault/public-mobile-apps.key -out $ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH
 
 ENCODED_ENCRYPTED_KEYCHAIN_PASSWORD="$(cat "$ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH" | base64 -b 0)"
 rm "$ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH" # Delete the password file, just to be safe

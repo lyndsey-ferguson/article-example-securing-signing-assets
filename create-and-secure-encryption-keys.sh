@@ -3,6 +3,8 @@
 # Restrict standard system command line tools.
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
+HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 # make sure that any error exits the script immediately
 set -e
 
@@ -13,13 +15,13 @@ CRYPTO_PASSWORD="$(openssl rand -hex 20)"
 
 # generate the private key in the process (no files written to disk)
 PRIVATE_KEY="$(openssl genrsa -aes256 -passout pass:"$CRYPTO_PASSWORD" 8192)"
-echo "$PRIVATE_KEY" > crypto.key
+echo "$PRIVATE_KEY" > $HERE/crypto.key
 
 # encode the private key to text so we can put it into Vault
 ENCODED_PRIVATE_KEY="$(echo "$PRIVATE_KEY" | base64 - | tr -d '\n')"
 
 # generate the public key from the private key so that it can be used to encrypt data
-echo "$PRIVATE_KEY" | openssl rsa -passin pass:"$CRYPTO_PASSWORD" -pubout -out vault/public-mobile-apps.key
+echo "$PRIVATE_KEY" | openssl rsa -passin pass:"$CRYPTO_PASSWORD" -pubout -out $HERE/vault/public-mobile-apps.key
 
 # write the encoded private key and the private key password to Vault
 curl \

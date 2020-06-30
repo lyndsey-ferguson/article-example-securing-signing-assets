@@ -5,6 +5,7 @@ set -x
 
 # Restrict standard system command line tools.
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 check_token_for_create_update_capabilities() {
   local secret_path
@@ -35,7 +36,7 @@ KEYSTORE_ENCODED_DATA="$(base64 -b 0 "$KEYSTORE_FILEPATH")"
 read -sp "Keystore password: " KEYSTORE_PASSWORD
 echo ""
 ENCRYPTED_KEYSTORE_PASSWORD_FILEPATH=$(mktemp /tmp/XXXXXX-encrypted-keystore-password.enc)
-echo "$KEYSTORE_PASSWORD" | tr -d '\n' | openssl rsautl -encrypt -pubin -inkey vault/public-mobile-apps.key -out $ENCRYPTED_KEYSTORE_PASSWORD_FILEPATH
+echo "$KEYSTORE_PASSWORD" | tr -d '\n' | openssl rsautl -encrypt -pubin -inkey $HERE/vault/public-mobile-apps.key -out $ENCRYPTED_KEYSTORE_PASSWORD_FILEPATH
 
 ENCODED_ENCRYPTED_KEYSTORE_PASSWORD="$(cat "$ENCRYPTED_KEYSTORE_PASSWORD_FILEPATH" | base64 -b 0)"
 read -p "Company name: " COMPANY_NAME
