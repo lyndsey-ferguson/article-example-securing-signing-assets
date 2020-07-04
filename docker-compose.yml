@@ -6,6 +6,9 @@ services:
     build:
       context: ./vault
       dockerfile: Dockerfile
+    container_name: vault
+    networks:
+    - vault
     ports:
       - 8200:8200
     volumes:
@@ -19,3 +22,7 @@ services:
     command: server -config=/vault/config/vault-config.json
     cap_add:
       - IPC_LOCK
+
+networks:
+  vault:
+    name: vault-net
