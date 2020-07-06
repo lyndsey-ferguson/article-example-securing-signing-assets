@@ -1,4 +1,4 @@
 
-path "secret/data/custom-mobile-apps/crypto" {
+path "secret/custom-mobile-apps/crypto" {
   capabilities = ["create", "update"]
 }

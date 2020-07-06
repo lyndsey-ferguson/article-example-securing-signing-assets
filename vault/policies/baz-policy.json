@@ -1,6 +1,6 @@
 {
   "path": {
-    "secret/data/baz": {
+    "secret/baz": {
       "policy": "read"
     }
   }

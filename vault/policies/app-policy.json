@@ -1,6 +1,6 @@
 {
   "path": {
-    "secret/data/app/*": {
+    "secret/app/*": {
       "policy": "read"
     }
   }

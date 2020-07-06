@@ -1,16 +1,16 @@
-path "secret/data/custom-mobile-apps/keychains/*" {
+path "secret/custom-mobile-apps/keychains/*" {
   capabilities = ["read"]
 }
 
-path "secret/data/custom-mobile-apps/apns_keys/*" {
+path "secret/custom-mobile-apps/apns_keys/*" {
   capabilities = ["read"]
 }
 
-path "secret/data/custom-mobile-apps/keystores/*" {
+path "secret/custom-mobile-apps/keystores/*" {
   capabilities = ["read"]
 }
 
-path "secret/data/custom-mobile-apps/crypto" {
+path "secret/custom-mobile-apps/crypto" {
   capabilities = ["read"]
 }
 
