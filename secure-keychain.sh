@@ -32,8 +32,8 @@ check_token_for_create_update_capabilities() {
 }
 
 # Make sure that we can write keychains and apns_keys secrets
-check_token_for_create_update_capabilities "secret/data/custom-mobile-apps/keychains/*"
-check_token_for_create_update_capabilities "secret/data/custom-mobile-apps/apns_keys/*"
+check_token_for_create_update_capabilities "secret/custom-mobile-apps/keychains/*"
+check_token_for_create_update_capabilities "secret/custom-mobile-apps/apns_keys/*"
 
 # Ensure the 1st parameter to script is a keychain, and 2nd is an APNS key
 KEYCHAIN_FILEPATH=$1
@@ -75,7 +75,7 @@ curl \
  -H "Content-Type: application/json" \
  -X POST \
  -d "{\"data\": {\"keychain_encoded_data\":\"$KEYCHAIN_ENCODED_DATA\", \"encoded_encrypted_keychain_password\": \"$ENCODED_ENCRYPTED_KEYCHAIN_PASSWORD\"}}" \
- "http://127.0.0.1:8200/v1/secret/data/custom-mobile-apps/keychains/$COMPANY_NAME"
+ "http://127.0.0.1:8200/v1/secret/custom-mobile-apps/keychains/$COMPANY_NAME"
 
 # Delete the encoded encrypted file, just to be safe
 rm "${COMPANY_NAME}-encoded-encrypted-keychain-password.enc"
@@ -93,7 +93,7 @@ EOF
 curl \
  -H "X-Vault-Token: $VAULT_TOKEN" \
  -H "Content-Type: application/json" \
- -X POST "http://127.0.0.1:8200/v1/secret/data/custom-mobile-apps/apns_keys/$COMPANY_NAME" \
+ -X POST "http://127.0.0.1:8200/v1/secret/custom-mobile-apps/apns_keys/$COMPANY_NAME" \
  -d @$APNS_JSON_FILEPATH
 
 echo "Keychain data secured into Vault"
