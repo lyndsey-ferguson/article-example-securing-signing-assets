@@ -1,12 +1,12 @@
 
-path "secret/custom-mobile-apps/keychains/*" {
+path "secret/data/custom-mobile-apps/keychains/*" {
   capabilities = ["create", "update"]
 }
 
-path "secret/custom-mobile-apps/apns_keys/*" {
+path "secret/data/custom-mobile-apps/apns_keys/*" {
   capabilities = ["create", "update"]
 }
 
-path "secret/custom-mobile-apps/keystores/*" {
+path "secret/data/custom-mobile-apps/keystores/*" {
   capabilities = ["create", "update"]
 }
