@@ -47,13 +47,18 @@ if [ ! -f "$APNS_PRIVATE_KEY_FILE_PATH" ]; then
   exit 1
 fi
 
-# Vault does not support storing and retrieving binary data: we need to encode
-# binary data into base64 in order to put it into Vault (remove extra newlines)
-KEYCHAIN_ENCODED_DATA="$(base64 -b 0 "$KEYCHAIN_FILEPATH")"
 if [[ -z ${KEYCHAIN_PASSWORD+x} ]]; then
   read -sp "Keychain password: " KEYCHAIN_PASSWORD
 fi
 echo ""
+
+# we need to make sure that codesigning can be done by Apple without a GUI prompting the system
+security set-key-partition-list -S "apple-tool:,apple:,/usr/bin/codesign"  -k "$KEYCHAIN_PASSWORD" "${KEYCHAIN_FILEPATH}" 
+
+# Vault does not support storing and retrieving binary data: we need to encode
+# binary data into base64 in order to put it into Vault (remove extra newlines)
+KEYCHAIN_ENCODED_DATA="$(base64 -b 0 "$KEYCHAIN_FILEPATH")"
+
 
 ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH=$(mktemp /tmp/encrypted-keychain-password.enc.XXXXXX)
 rm $ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH
