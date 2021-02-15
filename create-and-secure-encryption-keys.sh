@@ -18,7 +18,7 @@ PRIVATE_KEY="$(openssl genrsa -aes256 -passout pass:"$CRYPTO_PASSWORD" 8192)"
 echo "$PRIVATE_KEY" > $HERE/crypto.key
 
 # encode the private key to text so we can put it into Vault
-ENCODED_PRIVATE_KEY="$(echo "$PRIVATE_KEY" | base64 - | tr -d '\n')"
+ENCODED_PRIVATE_KEY="$(echo "$PRIVATE_KEY" | openssl base64 | tr -d '\n')"
 
 # generate the public key from the private key so that it can be used to encrypt data
 echo "$PRIVATE_KEY" | openssl rsa -passin pass:"$CRYPTO_PASSWORD" -pubout -out $HERE/vault/public-mobile-apps.key
