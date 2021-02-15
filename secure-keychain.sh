@@ -57,14 +57,14 @@ security set-key-partition-list -S "apple-tool:,apple:,/usr/bin/codesign"  -k "$
 
 # Vault does not support storing and retrieving binary data: we need to encode
 # binary data into base64 in order to put it into Vault (remove extra newlines)
-KEYCHAIN_ENCODED_DATA="$(base64 -w 0 "$KEYCHAIN_FILEPATH")"
+KEYCHAIN_ENCODED_DATA="$(openssl base64 < "$KEYCHAIN_FILEPATH" | tr -d \\n)"
 
 
 ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH=$(mktemp /tmp/encrypted-keychain-password.enc.XXXXXX)
 rm $ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH
 echo "$KEYCHAIN_PASSWORD" | tr -d '\n' | openssl rsautl -encrypt -pubin -inkey $HERE/vault/public-mobile-apps.key -out $ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH
 
-ENCODED_ENCRYPTED_KEYCHAIN_PASSWORD="$(cat "$ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH" | base64 -w 0)"
+ENCODED_ENCRYPTED_KEYCHAIN_PASSWORD="$(cat "$ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH" | openssl base64 | tr -d \\n)"
 rm "$ENCRYPTED_KEYCHAIN_PASSWORD_FILEPATH" # Delete the password file, just to be safe
 if [[ -z ${COMPANY_NAME+x} ]]; then
   read -p "Company name: " COMPANY_NAME
