@@ -113,7 +113,7 @@ GEM
     multipart-post (2.0.0)
     nanaimo (0.2.6)
     naturally (2.2.0)
-    openssl (2.0.3)
+    openssl (3.0.0)
     os (1.0.1)
     plist (3.5.0)
     pry (0.12.2)
